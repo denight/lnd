@@ -3265,6 +3265,16 @@
         "remote_constraints": {
           "$ref": "#/definitions/lnrpcChannelConstraints",
           "description": "List constraints for the remote node."
+        },
+        "local_balance_msat": {
+          "type": "string",
+          "format": "int64",
+          "description": "This node's current balance in this channel in millisatoshis."
+        },
+        "remote_balance_msat": {
+          "type": "string",
+          "format": "int64",
+          "description": "The counterparty's current balance in this channel in millisatoshis."
         }
       }
     },
