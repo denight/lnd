@@ -1205,6 +1205,8 @@ message HTLC {
 
     // Index identifying the htlc on the forwarding channel.
     uint64 forwarding_htlc_index = 7;
+
+    int64 amount_msat = 1002;
 }
 
 enum CommitmentType {
