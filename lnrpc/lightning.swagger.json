@@ -4537,6 +4537,10 @@
           "type": "string",
           "format": "uint64",
           "description": "Index identifying the htlc on the forwarding channel."
+        },
+        "amount_msat": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

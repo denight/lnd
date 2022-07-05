@@ -4072,6 +4072,7 @@ func createRPCOpenChannel(r *rpcServer, dbChannel *channeldb.OpenChannel,
 		channel.PendingHtlcs[i] = &lnrpc.HTLC{
 			Incoming:            htlc.Incoming,
 			Amount:              int64(htlc.Amt.ToSatoshis()),
+			AmountMsat:          int64(htlc.Amt),
 			HashLock:            rHash[:],
 			ExpirationHeight:    htlc.RefundTimeout,
 			HtlcIndex:           htlc.HtlcIndex,
