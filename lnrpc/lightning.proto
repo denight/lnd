@@ -1283,6 +1283,8 @@ message HTLC {
 
     // Index identifying the htlc on the forwarding channel.
     uint64 forwarding_htlc_index = 7;
+
+    int64 amount_msat = 1002;
 }
 
 enum CommitmentType {
@@ -1509,6 +1511,15 @@ message Channel {
 
     // This is the confirmed / on-chain zero-conf SCID.
     uint64 zero_conf_confirmed_scid = 33;
+
+    // This node's current balance in this channel in millisatoshis.
+    int64 local_balance_msat = 1001;
+
+    // The counterparty's current balance in this channel in millisatoshis.
+    int64 remote_balance_msat = 1002;
+
+    // The unsettled balance in this channel in millisatoshis.
+    int64 unsettled_balance_msat = 1003;
 }
 
 message ListChannelsRequest {
