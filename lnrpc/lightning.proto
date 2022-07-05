@@ -1462,6 +1462,12 @@ message Channel {
 
     // List constraints for the remote node.
     ChannelConstraints remote_constraints = 30;
+
+    // This node's current balance in this channel in millisatoshis.
+    int64 local_balance_msat = 1001;
+
+    // The counterparty's current balance in this channel in millisatoshis.
+    int64 remote_balance_msat = 1002;
 }
 
 message ListChannelsRequest {
