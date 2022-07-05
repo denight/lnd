@@ -3814,6 +3814,21 @@
         "memo": {
           "type": "string",
           "description": "An optional note-to-self to go along with the channel containing some\nuseful information. This is only ever stored locally and in no way impacts\nthe channel's operation."
+        },
+        "local_balance_msat": {
+          "type": "string",
+          "format": "int64",
+          "description": "This node's current balance in this channel in millisatoshis."
+        },
+        "remote_balance_msat": {
+          "type": "string",
+          "format": "int64",
+          "description": "The counterparty's current balance in this channel in millisatoshis."
+        },
+        "unsettled_balance_msat": {
+          "type": "string",
+          "format": "int64",
+          "description": "The unsettled balance in this channel in millisatoshis."
         }
       }
     },
@@ -5150,6 +5165,10 @@
           "type": "string",
           "format": "uint64",
           "description": "Index identifying the htlc on the forwarding channel."
+        },
+        "amount_msat": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
