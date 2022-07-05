@@ -4049,7 +4049,9 @@ func createRPCOpenChannel(r *rpcServer, dbChannel *channeldb.OpenChannel,
 		ChanId:                dbScid.ToUint64(),
 		Capacity:              int64(dbChannel.Capacity),
 		LocalBalance:          int64(localBalance.ToSatoshis()),
+		LocalBalanceMsat:      int64(localBalance),
 		RemoteBalance:         int64(remoteBalance.ToSatoshis()),
+		RemoteBalanceMsat:     int64(remoteBalance),
 		CommitFee:             int64(externalCommitFee),
 		CommitWeight:          commitWeight,
 		FeePerKw:              int64(localCommit.FeePerKw),
@@ -4130,6 +4132,7 @@ func createRPCOpenChannel(r *rpcServer, dbChannel *channeldb.OpenChannel,
 		channel.PendingHtlcs[i] = &lnrpc.HTLC{
 			Incoming:            htlc.Incoming,
 			Amount:              int64(htlc.Amt.ToSatoshis()),
+			AmountMsat:          int64(htlc.Amt),
 			HashLock:            rHash[:],
 			ExpirationHeight:    htlc.RefundTimeout,
 			HtlcIndex:           htlc.HtlcIndex,
@@ -4139,6 +4142,7 @@ func createRPCOpenChannel(r *rpcServer, dbChannel *channeldb.OpenChannel,
 
 		// Add the Pending Htlc Amount to UnsettledBalance field.
 		channel.UnsettledBalance += channel.PendingHtlcs[i].Amount
+		channel.UnsettledBalanceMsat += channel.PendingHtlcs[i].AmountMsat
 	}
 
 	// If we initiated opening the channel, the zero height remote balance
