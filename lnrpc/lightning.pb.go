@@ -4438,7 +4438,8 @@ type HTLC struct {
 	//Whether the HTLC is locked in. An HTLC is considered locked in when the
 	//remote party has sent us the `revoke_and_ack` to irrevocably commit this
 	//HTLC.
-	LockedIn      bool `protobuf:"varint,8,opt,name=locked_in,json=lockedIn,proto3" json:"locked_in,omitempty"`
+	LockedIn      bool  `protobuf:"varint,8,opt,name=locked_in,json=lockedIn,proto3" json:"locked_in,omitempty"`
+	AmountMsat    int64 `protobuf:"varint,1002,opt,name=amount_msat,json=amountMsat,proto3" json:"amount_msat,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -4527,6 +4528,13 @@ func (x *HTLC) GetLockedIn() bool {
 		return x.LockedIn
 	}
 	return false
+}
+
+func (x *HTLC) GetAmountMsat() int64 {
+	if x != nil {
+		return x.AmountMsat
+	}
+	return 0
 }
 
 type ChannelConstraints struct {
@@ -4758,8 +4766,14 @@ type Channel struct {
 	//
 	//Custom channel data that might be populated in custom channels.
 	CustomChannelData []byte `protobuf:"bytes,37,opt,name=custom_channel_data,json=customChannelData,proto3" json:"custom_channel_data,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	// This node's current balance in this channel in millisatoshis.
+	LocalBalanceMsat int64 `protobuf:"varint,1001,opt,name=local_balance_msat,json=localBalanceMsat,proto3" json:"local_balance_msat,omitempty"`
+	// The counterparty's current balance in this channel in millisatoshis.
+	RemoteBalanceMsat int64 `protobuf:"varint,1002,opt,name=remote_balance_msat,json=remoteBalanceMsat,proto3" json:"remote_balance_msat,omitempty"`
+	// The unsettled balance in this channel in millisatoshis.
+	UnsettledBalanceMsat int64 `protobuf:"varint,1003,opt,name=unsettled_balance_msat,json=unsettledBalanceMsat,proto3" json:"unsettled_balance_msat,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
 }
 
 func (x *Channel) Reset() {
@@ -5053,6 +5067,27 @@ func (x *Channel) GetCustomChannelData() []byte {
 		return x.CustomChannelData
 	}
 	return nil
+}
+
+func (x *Channel) GetLocalBalanceMsat() int64 {
+	if x != nil {
+		return x.LocalBalanceMsat
+	}
+	return 0
+}
+
+func (x *Channel) GetRemoteBalanceMsat() int64 {
+	if x != nil {
+		return x.RemoteBalanceMsat
+	}
+	return 0
+}
+
+func (x *Channel) GetUnsettledBalanceMsat() int64 {
+	if x != nil {
+		return x.UnsettledBalanceMsat
+	}
+	return 0
 }
 
 type ListChannelsRequest struct {
@@ -19063,7 +19098,7 @@ const file_lightning_proto_rawDesc = "" +
 	"\x15DisconnectPeerRequest\x12\x17\n" +
 	"\apub_key\x18\x01 \x01(\tR\x06pubKey\"0\n" +
 	"\x16DisconnectPeerResponse\x12\x16\n" +
-	"\x06status\x18\x01 \x01(\tR\x06status\"\xa3\x02\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\"\xc5\x02\n" +
 	"\x04HTLC\x12\x1a\n" +
 	"\bincoming\x18\x01 \x01(\bR\bincoming\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\x03R\x06amount\x12\x1b\n" +
@@ -19073,14 +19108,16 @@ const file_lightning_proto_rawDesc = "" +
 	"htlc_index\x18\x05 \x01(\x04R\thtlcIndex\x12-\n" +
 	"\x12forwarding_channel\x18\x06 \x01(\x04R\x11forwardingChannel\x122\n" +
 	"\x15forwarding_htlc_index\x18\a \x01(\x04R\x13forwardingHtlcIndex\x12\x1b\n" +
-	"\tlocked_in\x18\b \x01(\bR\blockedIn\"\x84\x02\n" +
+	"\tlocked_in\x18\b \x01(\bR\blockedIn\x12 \n" +
+	"\vamount_msat\x18\xea\a \x01(\x03R\n" +
+	"amountMsat\"\x84\x02\n" +
 	"\x12ChannelConstraints\x12\x1b\n" +
 	"\tcsv_delay\x18\x01 \x01(\rR\bcsvDelay\x12(\n" +
 	"\x10chan_reserve_sat\x18\x02 \x01(\x04R\x0echanReserveSat\x12$\n" +
 	"\x0edust_limit_sat\x18\x03 \x01(\x04R\fdustLimitSat\x12/\n" +
 	"\x14max_pending_amt_msat\x18\x04 \x01(\x04R\x11maxPendingAmtMsat\x12\"\n" +
 	"\rmin_htlc_msat\x18\x05 \x01(\x04R\vminHtlcMsat\x12,\n" +
-	"\x12max_accepted_htlcs\x18\x06 \x01(\rR\x10maxAcceptedHtlcs\"\xdd\v\n" +
+	"\x12max_accepted_htlcs\x18\x06 \x01(\rR\x10maxAcceptedHtlcs\"\xf4\f\n" +
 	"\aChannel\x12\x16\n" +
 	"\x06active\x18\x01 \x01(\bR\x06active\x12#\n" +
 	"\rremote_pubkey\x18\x02 \x01(\tR\fremotePubkey\x12#\n" +
@@ -19125,7 +19162,10 @@ const file_lightning_proto_rawDesc = "" +
 	"peer_alias\x18\" \x01(\tR\tpeerAlias\x12*\n" +
 	"\x0fpeer_scid_alias\x18# \x01(\x04B\x020\x01R\rpeerScidAlias\x12\x12\n" +
 	"\x04memo\x18$ \x01(\tR\x04memo\x12.\n" +
-	"\x13custom_channel_data\x18% \x01(\fR\x11customChannelData\"\xdf\x01\n" +
+	"\x13custom_channel_data\x18% \x01(\fR\x11customChannelData\x12-\n" +
+	"\x12local_balance_msat\x18\xe9\a \x01(\x03R\x10localBalanceMsat\x12/\n" +
+	"\x13remote_balance_msat\x18\xea\a \x01(\x03R\x11remoteBalanceMsat\x125\n" +
+	"\x16unsettled_balance_msat\x18\xeb\a \x01(\x03R\x14unsettledBalanceMsat\"\xdf\x01\n" +
 	"\x13ListChannelsRequest\x12\x1f\n" +
 	"\vactive_only\x18\x01 \x01(\bR\n" +
 	"activeOnly\x12#\n" +
